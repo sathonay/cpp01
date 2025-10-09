@@ -32,15 +32,8 @@ int main(int ac, char **av)
 
 	std::string line;
 	do {
-		try
-		{
 			std::getline(infile, line);
 			outfile << str_replace(line, find, replacement) << std::endl;
-		} catch (std::ios_base::failure& ex)
-		{
-			std::cout << ex.what() << std::endl;
-			break;
-		}
 //		https://cplusplus.com/reference/ios/basic_ios/rdstate
 	} while (infile.rdstate() == 0 && outfile.rdstate() == 0);
 
@@ -53,5 +46,6 @@ int main(int ac, char **av)
 		std::cerr << "Outfile: Logical error on i/o operation" << std::endl;
 	if ((outfile.rdstate() & std::ifstream::badbit) && !(outfile.rdstate() & std::ifstream::eofbit))
 		std::cerr << "Outfile: Read/writing error on i/o operation" << std::endl;
-
+	infile.close();
+	outfile.close();
 }
