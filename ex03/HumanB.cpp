@@ -14,8 +14,3 @@ void HumanB::setWeapon(Weapon &weapon)
 {
 	this->weapon = &weapon;
 }
-
-Weapon HumanB::getWeapon()
-{
-	return *this->weapon;
-}

@@ -13,6 +13,5 @@ class HumanB
 
 		void attack(void);
 		void setWeapon(Weapon &weapon);
-		Weapon getWeapon();
 };
 #endif
