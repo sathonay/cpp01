@@ -20,9 +20,10 @@ int main(int ac, char **av)
 {
 	if (ac != 4)
 	{
-		std::cout << *av << " file <str_to_replace> <str_replacement>" << std::endl;
+		std::cout << *av << " <file> <str_to_replace> <str_replacement>" << std::endl;
 		return 1;
 	}
+
 	std::string filename(av[1]);
 	std::string find(av[2]);
 	std::string replacement(av[3]);
@@ -48,4 +49,5 @@ int main(int ac, char **av)
 		std::cerr << "Outfile: Read/writing error on i/o operation" << std::endl;
 	infile.close();
 	outfile.close();
+	return 0;
 }
