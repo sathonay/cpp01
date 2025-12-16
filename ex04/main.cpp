@@ -29,8 +29,17 @@ int main(int ac, char **av)
 	std::string replacement(av[3]);
 
 	std::ifstream infile(filename.c_str(), std::ifstream::in);
-	std::ofstream outfile (filename.append(".replace").c_str(), std::ofstream::trunc);
+	if ((infile.rdstate() & std::ifstream::failbit) && !(infile.rdstate() & std::ifstream::eofbit))
+		std::cerr << "Infile: Logical error on i/o operation" << std::endl;
+	if ((infile.rdstate() & std::ifstream::badbit) && !(infile.rdstate() & std::ifstream::eofbit))
+		std::cerr << "Infile: Read/writing error on i/o operation" << std::endl;
+	if (infile.rdstate() != 0)
+	{
+		infile.close();
+		return (1);
+	}
 
+	std::ofstream outfile (filename.append(".replace").c_str(), std::ofstream::trunc);
 	std::string line;
 	do {
 			std::getline(infile, line);
@@ -38,16 +47,11 @@ int main(int ac, char **av)
 //		https://cplusplus.com/reference/ios/basic_ios/rdstate
 	} while (infile.rdstate() == 0 && outfile.rdstate() == 0);
 
-	if ((infile.rdstate() & std::ifstream::failbit) && !(infile.rdstate() & std::ifstream::eofbit))
-		std::cerr << "Infile: Logical error on i/o operation" << std::endl;
-	if ((infile.rdstate() & std::ifstream::badbit) && !(infile.rdstate() & std::ifstream::eofbit))
-		std::cerr << "Infile: Read/writing error on i/o operation" << std::endl;
-
 	if ((outfile.rdstate() & std::ifstream::failbit) && !(outfile.rdstate() & std::ifstream::eofbit))
 		std::cerr << "Outfile: Logical error on i/o operation" << std::endl;
 	if ((outfile.rdstate() & std::ifstream::badbit) && !(outfile.rdstate() & std::ifstream::eofbit))
 		std::cerr << "Outfile: Read/writing error on i/o operation" << std::endl;
 	infile.close();
 	outfile.close();
-	return 0;
+	return outfile.rdstate();
 }
