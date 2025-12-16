@@ -16,6 +16,7 @@ std::string str_replace(std::string str, std::string find, std::string replace)
 	return (str);
 }
 
+//		https://cplusplus.com/reference/ios/basic_ios/rdstate
 int main(int ac, char **av)
 {
 	if (ac != 4)
@@ -29,29 +30,56 @@ int main(int ac, char **av)
 	std::string replacement(av[3]);
 
 	std::ifstream infile(filename.c_str(), std::ifstream::in);
-	if ((infile.rdstate() & std::ifstream::failbit) && !(infile.rdstate() & std::ifstream::eofbit))
-		std::cerr << "Infile: Logical error on i/o operation" << std::endl;
-	if ((infile.rdstate() & std::ifstream::badbit) && !(infile.rdstate() & std::ifstream::eofbit))
-		std::cerr << "Infile: Read/writing error on i/o operation" << std::endl;
-	if (infile.rdstate() != 0)
+	if (!infile.is_open())
 	{
+		std::cerr << "Infile: Couldn't open" << std::endl;
 		infile.close();
-		return (1);
+		return 1;
 	}
 
 	std::ofstream outfile (filename.append(".replace").c_str(), std::ofstream::trunc);
+
+	if (!outfile.is_open())
+	{
+		std::cerr << "Outfile: Couldn't open" << std::endl;
+		(infile.close(), outfile.close());
+		return 1;
+	}
+
 	std::string line;
 	do {
-			std::getline(infile, line);
+			if (!std::getline(infile, line))
+				break;
 			outfile << str_replace(line, find, replacement) << std::endl;
-//		https://cplusplus.com/reference/ios/basic_ios/rdstate
-	} while (infile.rdstate() == 0 && outfile.rdstate() == 0);
+	}
+	while (infile.rdstate() == 0 && outfile.rdstate() == 0);
+
+	if ((infile.rdstate() & std::ifstream::failbit) && !(infile.rdstate() & std::ifstream::eofbit))
+	{
+		std::cerr << "Infile: Logical error on i/o operation" << std::endl;
+		(infile.close(), outfile.close());
+		return 1;
+	}
+	if ((infile.rdstate() & std::ifstream::badbit) && !(infile.rdstate() & std::ifstream::eofbit))
+	{
+		std::cerr << "Infile: Read/writing error on i/o operation" << std::endl;
+		(infile.close(), outfile.close());
+		return 1;
+	}
 
 	if ((outfile.rdstate() & std::ifstream::failbit) && !(outfile.rdstate() & std::ifstream::eofbit))
+	{
 		std::cerr << "Outfile: Logical error on i/o operation" << std::endl;
+		(infile.close(), outfile.close());
+		return 1;
+	}
 	if ((outfile.rdstate() & std::ifstream::badbit) && !(outfile.rdstate() & std::ifstream::eofbit))
+	{
 		std::cerr << "Outfile: Read/writing error on i/o operation" << std::endl;
-	infile.close();
-	outfile.close();
-	return outfile.rdstate();
+		(infile.close(), outfile.close());
+		return 1;
+	}
+
+	(infile.close(), outfile.close());
+	return 0;
 }
