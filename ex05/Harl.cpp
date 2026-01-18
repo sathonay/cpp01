@@ -30,7 +30,7 @@ int hash(std::string str)
 
 void Harl::complain( std::string level )
 {
-	void (Harl::*fn[5])(void) = {
+	static void (Harl::*fn[5])(void) = {
 		&Harl::error,
 		&Harl::warning,
 		&Harl::debug,
