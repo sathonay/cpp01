@@ -25,17 +25,19 @@ int hash(std::string str)
 {
     // OLD -> return (str.at(0) % str.at(str.length() - 1)) % 16;
     // NOKSIO -> return (str.at(0) % str.at(str.length() - 1)) & 15;
-    return (((str.at(0) & str.at(1) & 0xF) + 1) >> 1);
+    //return (((str.at(0) & str.at(1) & 0xF) + 1) >> 1);
+	int i = (((str.at(0) & 7) ^ 5)); // s/o to @greentor
+	int i4 = i & 0x4;
+    return ((i | (i4 >> 1)) | (i | (i4 >> 2))) & 0x3;
 }
 
 void Harl::complain( std::string level )
 {
-	static void (Harl::*fn[5])(void) = {
+	static void (Harl::*fn[4])(void) = {
 		&Harl::error,
-		&Harl::warning,
 		&Harl::debug,
-		0,
-		&Harl::info
+		&Harl::warning,
+		&Harl::info,
 	};
 	(this->*fn[hash(level)])();
 }
