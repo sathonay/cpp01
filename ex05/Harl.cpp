@@ -23,7 +23,8 @@ void Harl::error( void )
 
 int hash(std::string str)
 {
-	return (str.at(0) % str.at(str.length() - 1)) % 16;
+	// return (str.at(0) % str.at(str.length() - 1)) % 16;
+	return (str.at(0) % str.at(str.length() - 1)) & 15;
 }
 
 void Harl::complain( std::string level )
