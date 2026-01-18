@@ -30,10 +30,12 @@ int hash(std::string str)
 
 void Harl::complain( std::string level )
 {
-	void (Harl::*fn[5])(void) = {0};
-	fn[2] = &Harl::debug;
-	fn[4] = &Harl::info;
-	fn[1] = &Harl::warning;
-	fn[0] = &Harl::error;
+	void (Harl::*fn[5])(void) = {
+		&Harl::error,
+		&Harl::warning,
+		&Harl::debug,
+		0,
+		&Harl::info
+	};
 	(this->*fn[hash(level)])();
 }
