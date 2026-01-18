@@ -23,22 +23,17 @@ void Harl::error( void )
 
 int hash(std::string str)
 {
-	return (str.at(0) % str.at(str.length() - 1)) % 16;
+    // OLD -> return (str.at(0) % str.at(str.length() - 1)) % 16;
+    // NOKSIO -> return (str.at(0) % str.at(str.length() - 1)) & 15;
+    return (((str.at(0) & str.at(1) & 0xF) + 1) >> 1);
 }
 
 void Harl::complain( std::string level )
 {
-	//std::string keys[] = {"DEBUG", "INFO", "WARNING", "ERROR"};
-	//void (Harl::*fn[])(void) = {&Harl::debug, &Harl::info, &Harl::warning, &Harl::error};
-	//for (int i = 0; i < 4; i++)
-	//{
-	//	if (level == keys[i])	
-	//		(this->*fn[i])();
-	//}
-	void (Harl::*fn[10])(void) = {0};
-	fn[4] = &Harl::debug;
-	fn[9] = &Harl::info;
-	fn[0] = &Harl::warning;
-	fn[5] = &Harl::error;
+	void (Harl::*fn[5])(void) = {0};
+	fn[2] = &Harl::debug;
+	fn[4] = &Harl::info;
+	fn[1] = &Harl::warning;
+	fn[0] = &Harl::error;
 	(this->*fn[hash(level)])();
 }
